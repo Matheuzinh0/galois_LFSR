@@ -78,18 +78,34 @@ Cada módulo Verilog implementa uma interface completa para integração em SoCs
 
 ## 5. Esquemáticos RTL em LaTeX / TikZ
 
-Os esquemáticos foram gerados com base rigorosa no modelo `@rtl` (`estilo_rtl.tex`), dividindo os circuitos em níveis funcionais verticais delimitados por traços tracejados e números circulados:
+Os esquemáticos foram gerados com base rigorosa no modelo de referência em LaTeX/TikZ (`estilo_rtl.tex`), dividindo os circuitos em níveis funcionais verticais delimitados por traços tracejados e números circulados:
 
-- **Nível 1:** Barramento de controle (`clk`, `rst_n`, `en`, `load`) e realimentação.
+- **Nível 1:** Barramento de controle (`clk`, `rst_n`, `en`, `load`) e linha de realimentação global.
 - **Nível 2:** Lógica combinacional de tap com portas XOR internas ($D_i = Q_{i+1} \oplus Q_0$).
-- **Nível 3:** Multiplexadores de carga de semente síncrona.
-- **Nível 4:** Banco de Flip-Flops tipo D ($Q[N-1..0]$).
-- **Nível 5:** Saída paralela $q[N-1..0]$ e serial $lfsr\_out$.
+- **Nível 3:** Multiplexadores de carga síncrona de semente (`seed_data`).
+- **Nível 4:** Banco de Flip-Flops tipo D ($Q[N-1..0]$) com relógio e reset.
+- **Nível 5:** Barramento de estado de saída $q[N-1..0]$ e saída serial pseudoaleatória `lfsr_out`.
 
-O arquivo mestre `diagramas_rtl/diagramas_galois.tex` compila via `pdflatex` gerando `diagramas_galois.pdf`. Versões renderizadas em alta definição (150 DPI) estão disponíveis em `diagramas_rtl/img/`:
-- `diagramas_rtl/img/page-1.png`: Arquitetura geral do LFSR de Galois e célula elementar bit-slice.
-- `diagramas_rtl/img/page-2.png`: Esquemáticos RTL detalhados dos LFSRs de 2 bits e 4 bits.
-- `diagramas_rtl/img/page-3.png`: Esquemático RTL do LFSR de 8 bits e arquitetura modular de alta largura (16, 32 e 64 bits).
+O documento mestre [`diagramas_galois.tex`](diagramas_rtl/diagramas_galois.tex) compila via `pdflatex` gerando o documento vetorial [`diagramas_galois.pdf`](diagramas_rtl/diagramas_galois.pdf). Abaixo estão os diagramas renderizados em alta resolução:
+
+### Fig. 1: Arquitetura Conceitual e Célula Elementar (Bit-Slice)
+*(a) Arquitetura macroscópica em cascata de $N$ bits com realimentação interna Galois; (b) Célula elementar (bit-slice do estágio $i$) contendo porta XOR e multiplexador de carga de semente.*
+
+![Figura 1: Arquitetura Conceitual e Célula Elementar](diagramas_rtl/img/page-1.png)
+
+---
+
+### Fig. 2: Esquemáticos RTL Detalhados de 2 bits ($2^1$) e 4 bits ($2^2$)
+*(a) RTL do LFSR de 2 bits com polinômio $P(x) = x^2 + x + 1$ (Período = 3); (b) RTL do LFSR de 4 bits com polinômio $P(x) = x^4 + x + 1$ (Período = 15).*
+
+![Figura 2: LFSRs Galois de 2 e 4 bits](diagramas_rtl/img/page-2.png)
+
+---
+
+### Fig. 3: Esquemáticos RTL de 8 bits ($2^3$) e Arquitetura Modular (16, 32 e 64 bits)
+*(a) RTL do LFSR de 8 bits com polinômio $P(x) = x^8 + x^4 + x^3 + x^2 + 1$ (Período = 255); (b) Estrutura modular em blocos e mapeamento dos taps para 16 bits ($2^4$), 32 bits ($2^5$) e 64 bits ($2^6$).*
+
+![Figura 3: LFSRs Galois de 8 a 64 bits](diagramas_rtl/img/page-3.png)
 
 ---
 

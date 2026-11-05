@@ -1,0 +1,20 @@
+# Compilação e Simulação Verilog
+*.vvp
+*.vcd
+build/
+sim/build/
+
+# Artefatos auxiliares LaTeX (mantendo os arquivos .tex, .pdf e as imagens .png)
+diagramas_rtl/*.aux
+diagramas_rtl/*.log
+diagramas_rtl/*.out
+diagramas_rtl/*.synctex.gz
+
+# Python
+__pycache__/
+*.pyc
+
+# Arquivos temporários do SO / Editores
+.DS_Store
+*~
+*.swp

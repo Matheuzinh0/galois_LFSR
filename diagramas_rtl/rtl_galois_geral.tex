@@ -1,0 +1,54 @@
+% Autor: Matheus Sousa, Labotatório de Comunicação e Segurança da Informação, DES-CTG, UFPE.
+\begin{tikzpicture}[rtl]
+  \Niveis{2.6, 7.8, 16.6, 20.6}{-2.5}{3.6}
+  \NumNivel{1}{1.3}{4.0}
+  \NumNivel{2}{5.2}{4.0}
+  \NumNivel{3}{12.2}{4.0}
+  \NumNivel{4}{18.6}{4.0}
+  \NumNivel{5}{22.2}{4.0}
+
+  \node[porta, minimum width=15mm] (clk)  at (0.8, -2.0) {clk};
+  \node[porta, minimum width=15mm] (rst)  at (0.8, -1.3) {rst\_n};
+  \node[porta, minimum width=15mm] (load) at (0.8, -0.6) {load};
+  \node[porta, minimum width=15mm] (en)   at (0.8,  0.1) {en};
+
+  \FF{ff_msb}{5.2, 0.8}{$Q_{N-1}$}
+  \draw[->] (3.4, 1.2) -- (ff_msb-d);
+
+  \draw[->] (ff_msb-q) -- (7.2, 1.2);
+  \node[barra] at (7.6, 1.2) {$\cdots$};
+  \draw[->] (8.0, 1.2) -- node[barra, above] {$Q_{i+1}$} (9.2, 1.2);
+
+  \FF{ff_ip1}{10.2, 0.8}{$Q_{i+1}$}
+  \XOR{xor_i}{12.2, 1.2}
+  \draw[->] (ff_ip1-q) -- (xor_i.west);
+
+  \FF{ff_i}{14.2, 0.8}{$Q_i$}
+  \draw[->] (xor_i.east) -- (ff_i-d);
+
+  \draw[->] (ff_i-q) -- (16.0, 1.2);
+  \node[barra] at (16.4, 1.2) {$\cdots$};
+  \draw[->] (16.8, 1.2) -- node[barra, above] {$Q_1$} (17.6, 1.2);
+
+  \FF{ff_0}{18.6, 0.8}{$Q_0$}
+  \draw[->] (17.6, 1.2) -- (ff_0-d);
+
+  \draw (ff_0-q) -- (19.8, 1.2) node[no] (node_fb) {};
+  \node[porta, minimum width=18mm] (p_q)   at (22.5, 1.2) {q[$N{-}1..0$]};
+  \node[porta, minimum width=18mm] (p_out) at (22.5, 0.0) {lfsr\_out};
+
+  \draw[->] (node_fb) -- (p_q.west);
+  \draw[->] (node_fb) -| (21.2, 0.0) -- (p_out.west);
+
+  \draw[->] (node_fb) |- (21.0, 2.8) -- (2.0, 2.8) |- (3.4, 1.2);
+  \node[barra, above] at (11.5, 2.8) {Linha de Feedback Global Galois ($Q_0$)};
+
+  \draw[->] (12.2, 2.8) node[no] {} -- node[barra, left] {Tap $c_{i+1}$} (xor_i.north);
+
+  \draw (clk.east) -- (18.0, -2.0);
+  \draw[->] (4.6, -2.0) -- (ff_msb-clk);
+  \draw[->] (9.6, -2.0) -- (ff_ip1-clk);
+  \draw[->] (13.6, -2.0) -- (ff_i-clk);
+  \draw[->] (18.0, -2.0) -- (ff_0-clk);
+
+\end{tikzpicture}

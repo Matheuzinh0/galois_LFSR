@@ -1,0 +1,66 @@
+% Autor: Matheus Sousa, Labotatório de Comunicação e Segurança da Informação, DES-CTG, UFPE.
+\begin{tikzpicture}[rtl]
+  \Niveis{3.5, 8.5, 14.5, 19.5}{-3.2}{4.2}
+  \NumNivel{1}{1.8}{4.6}
+  \NumNivel{2}{6.0}{4.6}
+  \NumNivel{3}{11.5}{4.6}
+  \NumNivel{4}{17.0}{4.6}
+  \NumNivel{5}{21.0}{4.6}
+
+  \node[porta, minimum width=20mm] (clk) at (1.0, -2.4) {clk};
+  \node[porta, minimum width=20mm] (rst) at (1.0, -1.6) {rst\_n};
+  \node[porta, minimum width=20mm] (en)  at (1.0, -0.8) {en};
+  \node[porta, minimum width=20mm] (fb_in) at (1.0, 2.8) {$Q_0$ (feedback)};
+
+  \node[bloco, minimum width=32mm, minimum height=14mm] (b_msb) at (6.0, 1.8) {
+    \textbf{Bloco MSB}\\[1mm]
+    Deslocamento Puro\\
+    $Q_{N-1} \dots Q_{k_1+1}$
+  };
+  \draw[->] (fb_in.east) -- node[barra, above] {$D_{N-1} = Q_0$} (b_msb.west);
+
+  \XOR{xor_k1}{9.8, 1.8}
+  \draw[->] (b_msb.east) -- (xor_k1.west);
+  \draw[->] (fb_in.east) -| (9.8, 3.4) -- (xor_k1.north);
+  \node[barra, above] at (9.8, 2.2) {Tap $x^{k_1}$};
+
+  \node[bloco, minimum width=26mm, minimum height=14mm] (b_mid) at (12.4, 1.8) {
+    \textbf{Bloco Médio}\\
+    Deslocamento\\
+    $Q_{k_1} \dots Q_{k_2+1}$
+  };
+  \draw[->] (xor_k1.east) -- (b_mid.west);
+
+  \node[bloco, minimum width=34mm, minimum height=20mm] (b_taps) at (17.0, 0.4) {
+    \textbf{Seção de Taps LSB}\\[1mm]
+    Taps $x^{k_2}, x^{k_3}, x^1$\\[1mm]
+    $\begin{cases}
+      D_a = Q_{a+1} \oplus Q_0\\
+      D_b = Q_{b+1} \oplus Q_0\\
+      D_0 = Q_1 \oplus Q_0
+    \end{cases}$
+  };
+  \draw[->] (b_mid.east) -| (14.6, 0.8) -- (b_taps.west);
+  \draw[->] (fb_in.east) -| (17.0, 3.4) -- (b_taps.north);
+
+  \FF{ff0}{17.0, -2.0}{$Q_0$}
+  \draw[->] (b_taps.south) -- (ff0-d);
+
+  \draw (ff0-q) -- (18.8, -1.6) node[no] (node_lfsr_out) {};
+  \draw[->] (node_lfsr_out) |- (20.5, 3.8) -- (1.0, 3.8) -- (fb_in.north);
+  \node[barra, above] at (11.0, 3.8) {Linha de Feedback Global Galois de $1$ bit ($Q_0$)};
+
+  \node[porta, minimum width=18mm] (p_q)   at (21.2, 0.4) {q[$N{-}1..0$]};
+  \node[porta, minimum width=18mm] (p_out) at (21.2, -1.6) {lfsr\_out};
+
+  \draw[->] (b_taps.east) -- (p_q.west);
+  \draw[->] (node_lfsr_out) -- (p_out.west);
+
+  \node[draw, rounded corners=2mm, fill=gray!5, font=\scriptsize, align=left] at (11.5, -2.2) {
+    \textbf{Configuração dos Taps por Tamanho $2^n$}:\\[1mm]
+    $\bullet$ \textbf{16 bits} ($2^4$): $P(x) = x^{16} + x^{12} + x^3 + x + 1 \implies k_1=12, k_2=3, k_3=1$\\
+    $\bullet$ \textbf{32 bits} ($2^5$): $P(x) = x^{32} + x^{22} + x^2 + x + 1 \implies k_1=22, k_2=2, k_3=1$\\
+    $\bullet$ \textbf{64 bits} ($2^6$): $P(x) = x^{64} + x^4 + x^3 + x + 1 \implies k_1=4, k_2=3, k_3=1$
+  };
+
+\end{tikzpicture}

@@ -1,0 +1,37 @@
+% Autor: Matheus Sousa, Labotatório de Comunicação e Segurança da Informação, DES-CTG, UFPE.
+\begin{tikzpicture}[rtl]
+  \Niveis{3.8, 8.2, 12.2, 16.0}{-2.6}{3.4}
+  \NumNivel{1}{1.9}{3.8}
+  \NumNivel{2}{6.0}{3.8}
+  \NumNivel{3}{10.2}{3.8}
+  \NumNivel{4}{14.1}{3.8}
+  \NumNivel{5}{17.8}{3.8}
+
+  \node[porta, minimum width=20mm] (p_seed) at (1.0,  1.4) {seed[$i$]};
+  \node[porta, minimum width=20mm] (p_qin)  at (1.0,  0.4) {$Q_{i+1}$};
+  \node[porta, minimum width=20mm] (p_fb)   at (1.0, -0.6) {$Q_0$ (feedback)};
+  \node[porta, minimum width=20mm] (p_load) at (1.0, -1.5) {load};
+  \node[porta, minimum width=20mm] (p_clk)  at (1.0, -2.2) {clk};
+
+  \XOR{xor_tap}{6.0, 0.4}
+  \draw[->] (p_qin.east) -- (xor_tap.west);
+  \draw[->] (p_fb.east) -| (xor_tap.south);
+  \node[barra, above] at (6.0, 0.8) {Tap $c_{i+1}$};
+
+  \MUX{m_load}{10.2, 0.8}
+  \draw[->] (p_seed.east) -| (m_load-in1);
+  \draw[->] (xor_tap.east) -| (m_load-in0);
+  \draw[->] (p_load.east) -| (m_load-sel);
+
+  \FF{ff_cell}{14.1, 0.4}{$Q_i$}
+  \draw[->] (m_load-out) -- (ff_cell-d);
+  \draw[->] (p_clk.east) -| (13.2, -2.2) |- (ff_cell-clk);
+
+  \draw (ff_cell-q) -- (15.6, 0.8) node[no] (node_cell_out) {};
+  \node[porta, minimum width=22mm] (p_qnext) at (18.2,  1.4) {$Q_i \to Q_{i-1}$};
+  \node[porta, minimum width=22mm] (p_qbus)  at (18.2,  0.0) {q[$i$] (bus)};
+
+  \draw[->] (node_cell_out) |- (p_qnext.west);
+  \draw[->] (node_cell_out) |- (p_qbus.west);
+
+\end{tikzpicture}

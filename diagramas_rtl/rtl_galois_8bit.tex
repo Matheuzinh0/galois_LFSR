@@ -1,0 +1,60 @@
+% Autor: Matheus Sousa, Labotatório de Comunicação e Segurança da Informação, DES-CTG, UFPE.
+\begin{tikzpicture}[rtl]
+  \Niveis{1.8, 11.2, 18.0, 22.0}{-2.6}{3.8}
+  \NumNivel{1}{0.9}{4.2}
+  \NumNivel{2}{6.5}{4.2}
+  \NumNivel{3}{14.6}{4.2}
+  \NumNivel{4}{20.0}{4.2}
+  \NumNivel{5}{23.2}{4.2}
+
+  \node[porta, minimum width=14mm] (clk)  at (0.6, -2.0) {clk};
+  \node[porta, minimum width=14mm] (rst)  at (0.6, -1.3) {rst\_n};
+
+  \FF{ff7}{2.8, 0.8}{$Q_7$}
+  \FF{ff6}{5.0, 0.8}{$Q_6$}
+  \FF{ff5}{7.2, 0.8}{$Q_5$}
+  \FF{ff4}{9.4, 0.8}{$Q_4$}
+
+  \draw[->] (1.6, 1.2) -- (ff7-d);
+  \draw[->] (ff7-q) -- (ff6-d);
+  \draw[->] (ff6-q) -- (ff5-d);
+  \draw[->] (ff5-q) -- (ff4-d);
+
+  \XOR{xor3}{10.7, 1.2}
+  \draw[->] (ff4-q) -- (xor3.west);
+  \FF{ff3}{12.1, 0.8}{$Q_3$}
+  \draw[->] (xor3.east) -- (ff3-d);
+
+  \XOR{xor2}{13.4, 1.2}
+  \draw[->] (ff3-q) -- (xor2.west);
+  \FF{ff2}{14.8, 0.8}{$Q_2$}
+  \draw[->] (xor2.east) -- (ff2-d);
+
+  \XOR{xor1}{16.1, 1.2}
+  \draw[->] (ff2-q) -- (xor1.west);
+  \FF{ff1}{17.5, 0.8}{$Q_1$}
+  \draw[->] (xor1.east) -- (ff1-d);
+
+  \FF{ff0}{19.7, 0.8}{$Q_0$}
+  \draw[->] (ff1-q) -- (ff0-d);
+
+  \draw (ff0-q) -- (20.8, 1.2) node[no] (node_fb) {};
+  \draw[->] (node_fb) |- (20.5, 2.8) -- (1.6, 2.8) |- (ff7-d);
+  \node[barra, above] at (11.0, 2.8) {Feedback Galois $Q_0$};
+
+  \draw[->] (10.7, 2.8) node[no] {} -- (xor3.north);
+  \draw[->] (13.4, 2.8) node[no] {} -- (xor2.north);
+  \draw[->] (16.1, 2.8) node[no] {} -- (xor1.north);
+
+  \draw (clk.east) -- (19.1, -2.0);
+  \foreach \x in {2.2, 4.4, 6.6, 8.8, 11.5, 14.2, 16.9, 19.1} {
+    \draw[->] (\x, -2.0) -- ++(0, 1.75);
+  }
+
+  \node[porta, minimum width=16mm] (p_q)   at (23.4, 1.2) {q[7:0]};
+  \node[porta, minimum width=16mm] (p_out) at (23.4, 0.0) {lfsr\_out};
+
+  \draw[->] (node_fb) -- (p_q.west);
+  \draw[->] (node_fb) -| (21.5, 0.0) -- (p_out.west);
+
+\end{tikzpicture}

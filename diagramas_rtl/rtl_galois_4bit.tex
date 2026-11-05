@@ -1,0 +1,49 @@
+% Autor: Matheus Sousa, Labotatório de Comunicação e Segurança da Informação, DES-CTG, UFPE.
+\begin{tikzpicture}[rtl]
+  \Niveis{2.6, 6.4, 10.2, 14.2, 18.2}{-2.6}{3.8}
+  \NumNivel{1}{1.3}{4.2}
+  \NumNivel{2}{4.5}{4.2}
+  \NumNivel{3}{8.3}{4.2}
+  \NumNivel{4}{12.2}{4.2}
+  \NumNivel{5}{16.2}{4.2}
+  \NumNivel{6}{19.5}{4.2}
+
+  \node[porta, minimum width=15mm] (clk)  at (0.8, -2.0) {clk};
+  \node[porta, minimum width=15mm] (rst)  at (0.8, -1.3) {rst\_n};
+  \node[porta, minimum width=15mm] (load) at (0.8, -0.6) {load};
+
+  \FF{ff3}{4.5, 0.8}{$Q_3$}
+  \draw[->] (2.8, 1.2) -- (ff3-d);
+
+  \FF{ff2}{8.3, 0.8}{$Q_2$}
+  \draw[->] (ff3-q) -- node[barra, above] {$Q_3$} (ff2-d);
+
+  \FF{ff1}{12.2, 0.8}{$Q_1$}
+  \draw[->] (ff2-q) -- node[barra, above] {$Q_2$} (ff1-d);
+
+  \XOR{xor0}{14.6, 1.2}
+  \draw[->] (ff1-q) -- (xor0.west);
+
+  \FF{ff0}{16.6, 0.8}{$Q_0$}
+  \draw[->] (xor0.east) -- (ff0-d);
+
+  \draw (ff0-q) -- (17.8, 1.2) node[no] (node_fb) {};
+
+  \draw[->] (node_fb) |- (17.5, 2.8) -- (2.0, 2.8) |- (2.8, 1.2);
+  \node[barra, above] at (10.0, 2.8) {Realimentação de Galois ($Q_0$)};
+
+  \draw[->] (14.6, 2.8) node[no] {} -- (xor0.north);
+
+  \draw (clk.east) -- (16.0, -2.0);
+  \draw[->] (3.9, -2.0) -- (ff3-clk);
+  \draw[->] (7.7, -2.0) -- (ff2-clk);
+  \draw[->] (11.6, -2.0) -- (ff1-clk);
+  \draw[->] (16.0, -2.0) -- (ff0-clk);
+
+  \node[porta, minimum width=18mm] (p_q)   at (19.8, 1.2) {q[3:0]};
+  \node[porta, minimum width=18mm] (p_out) at (19.8, 0.0) {lfsr\_out};
+
+  \draw[->] (node_fb) -| (18.6, 0.0) -- (p_out.west);
+  \draw[->] (node_fb) -- (p_q.west);
+
+\end{tikzpicture}

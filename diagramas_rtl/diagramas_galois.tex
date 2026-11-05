@@ -1,0 +1,72 @@
+% Autor: Matheus Sousa, Labotatório de Comunicação e Segurança da Informação, DES-CTG, UFPE.
+\documentclass{article}
+\usepackage[a4paper, landscape, margin=1.2cm]{geometry}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{shapes.symbols, arrows.meta, calc}
+\input{estilo_rtl}
+\pagestyle{empty}
+\renewcommand{\figurename}{Fig.}
+
+\begin{document}
+
+\begin{figure}[p]
+  \centering
+  \begin{subfigure}{\linewidth}\centering
+    \resizebox{0.74\linewidth}{!}{\input{rtl_galois_geral}}
+    \caption{Arquitetura RTL geral do LFSR de Galois de $N$ bits com realimentação interna.}
+  \end{subfigure}\\[2mm]
+  \begin{subfigure}{\linewidth}\centering
+    \resizebox{0.68\linewidth}{!}{\input{rtl_galois_estagio}}
+    \caption{RTL da célula elementar (bit-slice do estágio $i$, repetida para $i = 0, \dots, N-1$).}
+  \end{subfigure}
+  \caption{Esquemáticos RTL conceituais do LFSR de Galois.
+    Em (a), a topologia interna distribui o bit $Q_0$ paralelamente para todos os pontos de tap.
+    Nível 1: barramento de controle e realimentação;
+    Nível 2: cálculo combinacional do tap com porta XOR ($D_i = Q_{i+1} \oplus Q_0$);
+    Nível 3: MUX $2\times1$ para carga síncrona de semente (load);
+    Nível 4: registrador de estado Flip-Flop tipo D com clock;
+    Nível 5: barramento de saída de estado $q[N{-}1..0]$ e saída serial pseudoaleatória $lfsr\_out = Q_0$.
+    Em (b), detalhe de cada estágio individual com seleção condicional do tap $c_{i+1}$.}
+  \label{fig:rtl_galois_conceitual}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \begin{subfigure}{\linewidth}\centering
+    \resizebox{0.78\linewidth}{!}{\input{rtl_galois_2bit}}
+    \caption{RTL do LFSR Galois de 2 bits ($2^1$), polinômio primitivo $P(x) = x^2 + x + 1$ (Período Máximo = 3).}
+  \end{subfigure}\\[2mm]
+  \begin{subfigure}{\linewidth}\centering
+    \resizebox{0.78\linewidth}{!}{\input{rtl_galois_4bit}}
+    \caption{RTL do LFSR Galois de 4 bits ($2^2$), polinômio primitivo $P(x) = x^4 + x + 1$ (Período Máximo = 15).}
+  \end{subfigure}
+  \caption{Esquemáticos RTL detalhados dos LFSRs de Galois para $N = 2$ e $N = 4$ bits.
+    Em (a), o circuito possui apenas dois flip-flops e uma porta XOR no estágio LSB ($D_0 = Q_1 \oplus Q_0$),
+    percorrendo a sequência cíclica de 3 estados não-nulos ($01 \to 11 \to 10$).
+    Em (b), o registrador de 4 bits possui um único tap no bit 1 ($D_0 = Q_1 \oplus Q_0$),
+    atingindo o período de 15 estados.}
+  \label{fig:rtl_galois_2_4}
+\end{figure}
+
+\begin{figure}[p]
+  \centering
+  \begin{subfigure}{\linewidth}\centering
+    \resizebox{0.82\linewidth}{!}{\input{rtl_galois_8bit}}
+    \caption{RTL do LFSR Galois de 8 bits ($2^3$), polinômio primitivo $P(x) = x^8 + x^4 + x^3 + x^2 + 1$ (Período Máximo = 255).}
+  \end{subfigure}\\[2mm]
+  \begin{subfigure}{\linewidth}\centering
+    \resizebox{0.78\linewidth}{!}{\input{rtl_galois_largos}}
+    \caption{Estrutura modular e mapeamento de taps dos LFSRs Galois de alta largura: 16 bits ($2^4$), 32 bits ($2^5$) e 64 bits ($2^6$).}
+  \end{subfigure}
+  \caption{Esquemáticos RTL dos geradores de ordem superior.
+    Em (a), os três XORs intermediários correspondem aos expoentes $x^4, x^3, x^2$ do polinômio primitivo,
+    garantindo que qualquer caminho combinacional contenha no máximo um atraso de porta XOR ($t_{cq} + t_{xor} + t_{setup}$).
+    Em (b), visualização da organização modular em cascata com distribuição do sinal de feedback para os taps ótimos
+    que atingem os períodos de $65.535$, $4.294.967.295$ e $18.446.744.073.709.551.615$ ciclos de clock.}
+  \label{fig:rtl_galois_8_64}
+\end{figure}
+
+\end{document}
